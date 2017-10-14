@@ -1,0 +1,62 @@
+import http.server
+import os
+from time import sleep
+import config as cfg
+import sequence as s
+
+class StoppableHTTPServer(http.server.HTTPServer):
+    def run(self):
+        try:
+            self.serve_forever()
+        except KeyboardInterrupt:
+            pass
+        finally:
+            # Clean-up server (close socket, etc.)
+            self.server_close()
+            MANAGER.stop()
+
+class Handler(http.server.SimpleHTTPRequestHandler):
+    def do_GET(self):
+        # Construct a server response.
+        try:
+            self.send_response(200)
+            self.send_header('Content-type', "text/html")
+            self.end_headers()
+
+            if self.path == "/get/sequences/html":
+                for file in os.listdir(cfg.SEQUENCE_DIR):
+                    btnclass = "default"
+                    if not MANAGER.currentsequence is None and MANAGER.currentsequence.name == file:
+                        btnclass = "primary"
+
+                    self.wfile.write(bytearray(
+                        ('<button class="btn btn-' + btnclass + '">' + file + '</button>').encode()
+                        ))
+            elif self.path == "/get/sequences/":
+                for file in os.listdir(cfg.SEQUENCE_DIR):
+                    self.wfile.write(bytearray((file + "\n").encode()))
+            elif self.path == "/stop/":
+                self.wfile.write(b"")
+                MANAGER.stopcurrentsequence()
+                MANAGER.clear()
+            elif str(self.path).startswith("/set/"):
+                name = str(self.path)[5:]
+                self.wfile.write(b"")
+                path = os.path.join(cfg.SEQUENCE_DIR, name)
+                print(path)
+                MANAGER.runsequence(s.Sequence.parsefile(path))
+            else:
+                f = open(cfg.HTML_FILE, "rb")
+                self.wfile.write(f.read())
+                f.close()
+
+            return
+        except Exception as ex:
+            print(ex)
+            self.send_response(500)
+
+MANAGER = s.SequenceManager()
+
+print('Server listening on port {}...'.format(cfg.PORT))
+httpd = StoppableHTTPServer(('', cfg.PORT), Handler)
+httpd.run()
