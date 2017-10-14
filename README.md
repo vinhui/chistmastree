@@ -16,4 +16,4 @@ Control your christmas tree with this simple program.
 6. Open your browser on and go to `http://[raspberry ip]:8000/` (the port is configurable in the config file)
 
 ## Notes
-If you want to add new sequences, you can place the text file in the Sequences directory and it'll be automatically updated. You don't have to restart the server for it to be recognized.
+If you want to add new sequences, you can place the text file in the `Sequences` directory and it'll be automatically updated. You don't have to restart the server for it to be recognized.
