@@ -54,6 +54,27 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             print(ex)
             self.send_response(500)
 
+    def do_POST(self):
+        try:
+            self.send_response(200)
+            self.send_header('Content-type', "text/html")
+            self.end_headers()
+
+            if self.path == "/set/":
+                self.wfile.write(b"")
+
+                content_length = int(self.headers['Content-Length'])
+                post_data = self.rfile.read(content_length)
+                post_string = post_data.decode("utf-8")
+
+                seq = s.Sequence.parsestring(post_string)
+                MANAGER.runsequence(seq)
+            else:
+                self.wfile.write(b"")
+        except Exception as ex:
+            print(ex)
+            self.send_response(500)
+
 MANAGER = s.SequenceManager()
 
 print('Server listening on port {}...'.format(cfg.PORT))
