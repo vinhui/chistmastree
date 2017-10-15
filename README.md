@@ -17,3 +17,14 @@ Control your christmas tree with this simple program.
 
 ## Notes
 If you want to add new sequences, you can place the text file in the `Sequences` directory and it'll be automatically updated. You don't have to restart the server for it to be recognized.
+
+## API
+You can also control the strip with HTTP requests.
+
+| Url                   | Method    | Description |
+|-----------------------|-----------|-------------|
+|`/get/sequences/`      | GET       | Get a list of available sequences, one item on each line |
+|`/get/current/`        | GET       | Get the name of the currently running sequence |
+|`/set/[name]`          | GET       | Play a sequence by name |
+|`/set/`                | POST      | Play a sequence file that is passed as the body of the POST request |
+|`/stop/`               | GET       | Stop any running sequence |
