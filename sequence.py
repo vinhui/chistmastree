@@ -2,6 +2,7 @@ import os
 import logging
 from threading import Thread
 from time import sleep
+from random import randint
 from color import Color
 import config as cfg
 from neopixel import Adafruit_NeoPixel
@@ -111,8 +112,9 @@ class Sequence:
     def parsestring(string):
         print("Parsing sequence string")
         seq = Sequence()
+        seq.name = "String sequence " + str(randint(10000, 99999))
 
-        for i, line in enumerate(iter(string, '')):
+        for i, line in enumerate(iter(string.splitlines())):
             line = line.strip()
 
             if line == "" or line.startswith("#") or line.startswith(";"):
