@@ -86,13 +86,13 @@
 29,29,255,0,0,100
 
 #Disable all lights
-0,255,0,0,0,5
-                                </textarea>
+0,255,0,0,0,5</textarea>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-lg-12">
-                                <button class="btn btn-success pull-right" id="run-sequence">Run</button>
+                                <button class="btn btn-default pull-right" id="run-sequence-remote">Run on tree</button>
+                                <button class="btn btn-success pull-right" id="run-sequence">Test</button>
                                 <button class="btn btn-default pull-right" id="stop-sequence">Stop</button>
                             </div>
                         </div>
@@ -140,6 +140,16 @@
 
             if (!runDelta)
                 runSequence();
+        });
+
+        $(".row").on('click', '#run-sequence-remote', function () {
+            $.ajax({
+                type: "POST",
+                url: "/set/",
+                data: $("textarea[name='sequence-data']").val()
+            })
+            .success(connectionSuccess)
+            .fail(connectionFailed);
         });
 
         $(".row").on('click', '#stop-sequence', function () {
