@@ -35,6 +35,11 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             elif self.path == "/get/sequences/":
                 for file in os.listdir(cfg.SEQUENCE_DIR):
                     self.wfile.write(bytearray((file + "\n").encode()))
+            elif self.path == "/get/current/":
+                if MANAGER.currentsequence is not None:
+                    self.wfile.write(bytearray(MANAGER.currentsequence.name.encode()))
+                else:
+                    self.wfile.write(b"")
             elif self.path == "/stop/":
                 self.wfile.write(b"")
                 MANAGER.stopcurrentsequence()
