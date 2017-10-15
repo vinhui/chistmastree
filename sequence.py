@@ -88,7 +88,7 @@ class Sequence:
 
     @staticmethod
     def parsefile(path):
-        print("Parsing file {}".format(path))
+        print("Parsing sequence file {}".format(path))
         file = open(path)
         seq = Sequence()
         seq.name = os.path.basename(os.path.splitext(path)[0])
@@ -104,6 +104,25 @@ class Sequence:
                 seq.data.append(data)
             else:
                 logging.error("Failed to parse line %s in file \\'%s\\'", i, path)
+
+        return seq
+
+    @staticmethod
+    def parsestring(string):
+        print("Parsing sequence string")
+        seq = Sequence()
+
+        for i, line in enumerate(iter(string, '')):
+            line = line.strip()
+
+            if line == "" or line.startswith("#") or line.startswith(";"):
+                continue
+
+            data = SequenceData.parseline(line)
+            if data != None:
+                seq.data.append(data)
+            else:
+                logging.error("Failed to parse line %s (%s)", i, line)
 
         return seq
 
