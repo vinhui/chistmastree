@@ -43,7 +43,6 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                 name = str(self.path)[5:]
                 self.wfile.write(b"")
                 path = os.path.join(cfg.SEQUENCE_DIR, name)
-                print(path)
                 MANAGER.runsequence(s.Sequence.parsefile(path))
             else:
                 f = open(cfg.HTML_FILE, "rb")
