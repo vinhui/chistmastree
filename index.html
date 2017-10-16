@@ -9,7 +9,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <link rel="stylesheet" href="https://bootswatch.com/lumen/bootstrap.css" media="screen">
     <link rel="stylesheet" href="https://bootswatch.com/assets/css/custom.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 </head>
 <body>
     <div class="container">
@@ -91,11 +93,62 @@
                         </div>
                         <div class="row">
                             <div class="col-lg-12">
+                                <button class="btn btn-default pull-left" data-toggle="modal" data-target="#generateModal">Generator</button>
                                 <button class="btn btn-default pull-right" id="run-sequence-remote">Run on tree</button>
                                 <button class="btn btn-success pull-right" id="run-sequence">Test</button>
                                 <button class="btn btn-default pull-right" id="stop-sequence">Stop</button>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="generateModal" role="dialog">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h2 class="modal-title">Generate</h2>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group form-group-sm">
+                            <div class="row">
+                                <label for="generate-startled" class="col-sm-2">Start LED</label>
+                                <input type="number" class="col-sm-2" id="generate-startled" value="0" min="0" max="255" step="1"/>
+                            </div>
+                            <div class="row">
+                                <label for="generate-endled" class="col-sm-2">End LED</label>
+                                <input type="number" class="col-sm-2" id="generate-endled" value="255" min="0" max="255" step="1"/>
+                            </div>
+                            <div class="row">
+                                <label for="generate-startcolor" class="col-sm-2">Start Color</label>
+                                <input type="color" class="col-sm-2" id="generate-startcolor" value="#000000"/>
+                            </div>
+                            <div class="row">
+                                <label for="generate-midcolor" class="col-sm-2">Mid Color</label>
+                                <input type="color" class="col-sm-2" id="generate-midcolor" value="#ffffff"/>
+                            </div>
+                            <div class="row">
+                                <label for="generate-endcolor" class="col-sm-2">End Color</label>
+                                <input type="color" class="col-sm-2" id="generate-endcolor" value="#000000"/>
+                            </div>
+                            <div class="row">
+                                <label for="generate-duration" class="col-sm-2">Duration <span class="small">(ms)</span></label>
+                                <input type="number" class="col-sm-2" id="generate-duration" value="5000" step="10" min="10" />
+                            </div>
+                            <div class="row">
+                                <label for="generate-step" class="col-sm-2">Step <span class="small">(ms)</span></label>
+                                <input type="number" class="col-sm-2" id="generate-step" value="10" step="10" min="10" />
+                            </div>
+                        </div>
+                        <div>
+                            <h3>Output:</h3>
+                            <textarea class="form-control" id="generate-output" rows="5"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" id="generate-button">Generate</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                     </div>
                 </div>
             </div>
@@ -125,8 +178,8 @@
             }
             $.get(url, function (data, status) {
                 updateSequences();
+                connectionSuccess();
             })
-            .success(connectionSuccess)
             .fail(connectionFailed);
         });
 
@@ -147,8 +200,9 @@
                 type: "POST",
                 url: "/set/",
                 data: $("textarea[name='sequence-data']").val()
+            }, function(){
+                connectionSuccess();
             })
-            .success(connectionSuccess)
             .fail(connectionFailed);
         });
 
@@ -173,8 +227,8 @@
         function updateSequences() {
             $.get("/get/sequences/html", function (data, status) {
                 $("#sequences").html(data);
+                connectionSuccess();
             })
-            .success(connectionSuccess)
             .fail(connectionFailed);
         }
 
@@ -244,6 +298,68 @@
 
         function setLedColor(index, r, g, b) {
             $(".strip-tester li").eq(index).css("background-color", "rgb(" + r + "," + g + "," + b + ")");
+        }
+
+
+        $("#generate-button").click(function(){
+            generateFade();
+            $("#generate-output").effect("highlight");
+        });
+        function generateFade() {
+            var startLed = parseInt($("#generate-startled").val());
+            var endLed = parseInt($("#generate-endled").val());
+            var startColor = $("#generate-startcolor").val();
+            var midColor = $("#generate-midcolor").val();
+            var endColor = $("#generate-endcolor").val();
+            var duration = parseInt($("#generate-duration").val());
+            var step = parseInt($("#generate-step").val());
+
+            var output = "";
+
+            for (var i = 0; i < duration / 2; i += step) {
+                var t = i / (duration / 2);
+                var color = lerpColor(startColor, midColor, t);
+                var rgb = hexToRgb(color);
+                output += startLed+","+endLed+","+rgb[0]+","+rgb[1]+","+rgb[2]+","+step+"\n";
+           }
+
+            for (var i = 0; i < duration / 2; i += step) {
+                var t = i / (duration / 2);
+                var color = lerpColor(midColor, endColor, t);
+                var rgb = hexToRgb(color);
+                output += startLed+","+endLed+","+rgb[0]+","+rgb[1]+","+rgb[2]+","+step+"\n";
+           }
+        
+           var endrgb = hexToRgb(endColor);
+           output += startLed+","+endLed+","+endrgb[0]+","+endrgb[1]+","+endrgb[2]+","+step;
+           $("#generate-output").val(output);
+        }
+
+        // https://gist.github.com/rosszurowski/67f04465c424a9bc0dae
+        function lerpColor(a, b, amount) { 
+            var ah = parseInt(a.replace(/#/g, ''), 16),
+                ar = ah >> 16, ag = ah >> 8 & 0xff, ab = ah & 0xff,
+                bh = parseInt(b.replace(/#/g, ''), 16),
+                br = bh >> 16, bg = bh >> 8 & 0xff, bb = bh & 0xff,
+                rr = ar + amount * (br - ar),
+                rg = ag + amount * (bg - ag),
+                rb = ab + amount * (bb - ab);
+
+            return '#' + ((1 << 24) + (rr << 16) + (rg << 8) + rb | 0).toString(16).slice(1);
+        }
+
+        // https://stackoverflow.com/questions/21646738/convert-hex-to-rgba
+        function hexToRgb(hex) {
+            var c;
+            if(/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)){
+                c = hex.substring(1).split('');
+                if(c.length== 3){
+                    c= [c[0], c[0], c[1], c[1], c[2], c[2]];
+                }
+                c= '0x'+c.join('');
+                return [(c>>16)&255, (c>>8)&255, c&255];
+            }
+            throw new Error('Bad Hex');
         }
     </script>
 </body>
