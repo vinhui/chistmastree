@@ -52,7 +52,7 @@ class SequenceManager:
 
                 self.setrangecolor(x.startid, x.endid, x.color, x.delay > 2)
                 if x.delay > 2:
-                    sleep(x.delay/1000)
+                    sleep(max(x.delay, 10)/1000)
 
         if seq == self.currentsequence:
             self.thread = None
