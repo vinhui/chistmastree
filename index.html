@@ -121,16 +121,13 @@
                                 <input type="number" class="col-sm-2" id="generate-endled" value="255" min="0" max="255" step="1"/>
                             </div>
                             <div class="row">
-                                <label for="generate-startcolor" class="col-sm-2">Start Color</label>
-                                <input type="color" class="col-sm-2" id="generate-startcolor" value="#000000"/>
+                                <label for="generate-color-1" class="col-sm-2">Color #1</label>
+                                <input type="color" class="col-sm-2 generate-color" id="generate-color-1" value="#000000"/>
                             </div>
                             <div class="row">
-                                <label for="generate-midcolor" class="col-sm-2">Mid Color</label>
-                                <input type="color" class="col-sm-2" id="generate-midcolor" value="#ffffff"/>
-                            </div>
-                            <div class="row">
-                                <label for="generate-endcolor" class="col-sm-2">End Color</label>
-                                <input type="color" class="col-sm-2" id="generate-endcolor" value="#000000"/>
+                                <label for="generate-color-2" class="col-sm-2">Color #2</label>
+                                <input type="color" class="col-sm-2 generate-color" id="generate-color-2" value="#ffffff"/>
+                                <button class="col-sm-1 generate-color-add">+</button>
                             </div>
                             <div class="row">
                                 <label for="generate-duration" class="col-sm-2">Duration <span class="small">(ms)</span></label>
@@ -305,32 +302,49 @@
             generateFade();
             $("#generate-output").effect("highlight");
         });
+        function remGradientColor() {
+            $(".generate-color:last").parent().remove();
+            $(".generate-color-rem:last").show();
+            $(".generate-color-add:last").show();
+        }
+        function addGradientColor() {
+            $(".generate-color-rem").hide();
+            $(".generate-color-add").hide();
+            var index = $(".generate-color").length + 1;
+            $(".generate-color:last").parent().after(`
+                            <div class="row">
+                                <label for="generate-color-`+index+`" class="col-sm-2">Color #`+index+`</label>
+                                <input type="color" class="col-sm-2 generate-color" id="generate-color-`+index+`" value="#000000"/>
+                                <button class="col-sm-1 generate-color-rem">-</button>
+                                <button class="col-sm-1 generate-color-add">+</button>
+                            </div>`);
+        }
+        $(document).on('click', '.generate-color-add', function () {
+            addGradientColor();
+        });
+        $(document).on('click', '.generate-color-rem', function () {
+            remGradientColor();
+        });
         function generateFade() {
             var startLed = parseInt($("#generate-startled").val());
             var endLed = parseInt($("#generate-endled").val());
-            var startColor = $("#generate-startcolor").val();
-            var midColor = $("#generate-midcolor").val();
-            var endColor = $("#generate-endcolor").val();
             var duration = parseInt($("#generate-duration").val());
             var step = parseInt($("#generate-step").val());
+            var colors = $(".generate-color").map(function() { return $(this).val() });
 
             var output = "";
 
-            for (var i = 0; i < duration / 2; i += step) {
-                var t = i / (duration / 2);
-                var color = lerpColor(startColor, midColor, t);
-                var rgb = hexToRgb(color);
-                output += startLed+","+endLed+","+rgb[0]+","+rgb[1]+","+rgb[2]+","+step+"\n";
-           }
-
-            for (var i = 0; i < duration / 2; i += step) {
-                var t = i / (duration / 2);
-                var color = lerpColor(midColor, endColor, t);
-                var rgb = hexToRgb(color);
-                output += startLed+","+endLed+","+rgb[0]+","+rgb[1]+","+rgb[2]+","+step+"\n";
-           }
+            var section = duration / (colors.length - 1);
+            for (var n = 0; n < colors.length - 1; n++) {
+                for (var i = 0; i < section; i += step) {
+                    var t = i / section;
+                    var color = lerpColor(colors[n], colors[n + 1], t);
+                    var rgb = hexToRgb(color);
+                    output += startLed+","+endLed+","+rgb[0]+","+rgb[1]+","+rgb[2]+","+step+"\n";
+                }
+            }
         
-           var endrgb = hexToRgb(endColor);
+           var endrgb = hexToRgb(colors[colors.length - 1]);
            output += startLed+","+endLed+","+endrgb[0]+","+endrgb[1]+","+endrgb[2]+","+step;
            $("#generate-output").val(output);
         }
