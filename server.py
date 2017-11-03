@@ -36,22 +36,30 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                 for file in os.listdir(cfg.SEQUENCE_DIR):
                     self.wfile.write(bytearray((file + "\n").encode()))
             elif self.path == "/get/current/":
+                self.wfile.write(b"")
+                return
                 if MANAGER.currentsequence is not None:
                     self.wfile.write(bytearray(MANAGER.currentsequence.name.encode()))
                 else:
                     self.wfile.write(b"")
             elif self.path == "/stop/":
                 self.wfile.write(b"")
+                return
                 MANAGER.stopcurrentsequence()
                 MANAGER.clear()
             elif str(self.path).startswith("/set/"):
+                self.wfile.write(b"")
+                return
                 name = str(self.path)[5:]
                 self.wfile.write(b"")
                 path = os.path.join(cfg.SEQUENCE_DIR, name)
                 MANAGER.runsequence(s.Sequence.parsefile(path))
             else:
-                f = open(cfg.HTML_FILE, "rb")
-                self.wfile.write(f.read())
+                if self.path.endswith(".js") or self.path.endswith(".css"):
+                    super(Handler, self).do_GET()
+                else:
+                    f = open(cfg.HTML_FILE, "rb")
+                    self.wfile.write(f.read())
                 f.close()
 
             return
