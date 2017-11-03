@@ -9,9 +9,6 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <link rel="stylesheet" href="https://bootswatch.com/lumen/bootstrap.css" media="screen">
     <link rel="stylesheet" href="https://bootswatch.com/assets/css/custom.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 </head>
 <body>
     <div class="container">
@@ -55,104 +52,108 @@
                         <div class="row">
                             <div class="col-lg-12">
                                 <textarea style="width: 100%" rows="20" name="sequence-data">
-#startID(0-255),endID(0-255),r(0-255),g(0-255),b(0-255),delay in ms
-0,0,0,255,0,100
-1,1,255,0,0,100
-2,2,0,255,0,100
-3,3,255,0,0,100
-4,4,0,255,0,100
-5,5,255,0,0,100
-6,6,0,255,0,100
-7,7,255,0,0,100
-8,8,0,255,0,100
-9,9,255,0,0,100
-10,10,0,255,0,100
-11,11,255,0,0,100
-12,12,0,255,0,100
-13,13,255,0,0,100
-14,14,0,255,0,100
-15,15,255,0,0,100
-16,16,0,255,0,100
-17,17,255,0,0,100
-18,18,0,255,0,100
-19,19,255,0,0,100
-20,20,0,255,0,100
-21,21,255,0,0,100
-22,22,0,255,0,100
-23,23,255,0,0,100
-24,24,0,255,0,100
-25,25,255,0,0,100
-26,26,0,255,0,100
-27,27,255,0,0,100
-28,28,0,255,0,100
-29,29,255,0,0,100
-
-#Disable all lights
-0,255,0,0,0,5</textarea>
+                                    #startID(0-255),endID(0-255),r(0-255),g(0-255),b(0-255),delay in ms
+                                    0,0,0,255,0,100
+                                    1,1,255,0,0,100
+                                    2,2,0,255,0,100
+                                    3,3,255,0,0,100
+                                    4,4,0,255,0,100
+                                    5,5,255,0,0,100
+                                    6,6,0,255,0,100
+                                    7,7,255,0,0,100
+                                    8,8,0,255,0,100
+                                    9,9,255,0,0,100
+                                    10,10,0,255,0,100
+                                    11,11,255,0,0,100
+                                    12,12,0,255,0,100
+                                    13,13,255,0,0,100
+                                    14,14,0,255,0,100
+                                    15,15,255,0,0,100
+                                    16,16,0,255,0,100
+                                    17,17,255,0,0,100
+                                    18,18,0,255,0,100
+                                    19,19,255,0,0,100
+                                    20,20,0,255,0,100
+                                    21,21,255,0,0,100
+                                    22,22,0,255,0,100
+                                    23,23,255,0,0,100
+                                    24,24,0,255,0,100
+                                    25,25,255,0,0,100
+                                    26,26,0,255,0,100
+                                    27,27,255,0,0,100
+                                    28,28,0,255,0,100
+                                    29,29,255,0,0,100
+                                    
+                                    #Disable all lights
+                                    0,255,0,0,0,5</textarea>
+                                </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <button class="btn btn-default pull-left" data-toggle="modal" data-target="#generateModal">Generator</button>
-                                <button class="btn btn-default pull-right" id="run-sequence-remote">Run on tree</button>
-                                <button class="btn btn-success pull-right" id="run-sequence">Test</button>
-                                <button class="btn btn-default pull-right" id="stop-sequence">Stop</button>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <button class="btn btn-default pull-left" data-toggle="modal" data-target="#generateModal">Generator</button>
+                                    <button class="btn btn-default pull-right" id="run-sequence-remote">Run on tree</button>
+                                    <button class="btn btn-success pull-right" id="run-sequence">Test</button>
+                                    <button class="btn btn-default pull-right" id="stop-sequence">Stop</button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="modal fade" id="generateModal" role="dialog">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h2 class="modal-title">Generate</h2>
-                    </div>
-                    <div class="modal-body">
-                        <div class="form-group form-group-sm">
-                            <div class="row">
-                                <label for="generate-startled" class="col-sm-2">Start LED</label>
-                                <input type="number" class="col-sm-2" id="generate-startled" value="0" min="0" max="255" step="1"/>
+            <div class="modal fade" id="generateModal" role="dialog">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h2 class="modal-title">Generate</h2>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group form-group-sm">
+                                <div class="row">
+                                    <label for="generate-startled" class="col-sm-2">Start LED</label>
+                                    <input type="number" class="col-sm-2" id="generate-startled" value="0" min="0" max="255" step="1"/>
+                                </div>
+                                <div class="row">
+                                    <label for="generate-endled" class="col-sm-2">End LED</label>
+                                    <input type="number" class="col-sm-2" id="generate-endled" value="255" min="0" max="255" step="1"/>
+                                </div>
+                                <div class="row">
+                                    <label for="generate-color-1" class="col-sm-2">Color #1</label>
+                                    <input type="color" class="col-sm-2 generate-color" id="generate-color-1" value="#000000"/>
+                                </div>
+                                <div class="row">
+                                    <label for="generate-color-2" class="col-sm-2">Color #2</label>
+                                    <input type="color" class="col-sm-2 generate-color" id="generate-color-2" value="#ffffff"/>
+                                    <button class="col-sm-1 generate-color-add">+</button>
+                                </div>
+                                <div class="row">
+                                    <label for="generate-duration" class="col-sm-2">Duration <span class="small">(ms)</span></label>
+                                    <input type="number" class="col-sm-2" id="generate-duration" value="5000" step="10" min="10" />
+                                </div>
+                                <div class="row">
+                                    <label for="generate-step" class="col-sm-2">Step <span class="small">(ms)</span></label>
+                                    <input type="number" class="col-sm-2" id="generate-step" value="10" step="10" min="10" />
+                                </div>
                             </div>
-                            <div class="row">
-                                <label for="generate-endled" class="col-sm-2">End LED</label>
-                                <input type="number" class="col-sm-2" id="generate-endled" value="255" min="0" max="255" step="1"/>
-                            </div>
-                            <div class="row">
-                                <label for="generate-color-1" class="col-sm-2">Color #1</label>
-                                <input type="color" class="col-sm-2 generate-color" id="generate-color-1" value="#000000"/>
-                            </div>
-                            <div class="row">
-                                <label for="generate-color-2" class="col-sm-2">Color #2</label>
-                                <input type="color" class="col-sm-2 generate-color" id="generate-color-2" value="#ffffff"/>
-                                <button class="col-sm-1 generate-color-add">+</button>
-                            </div>
-                            <div class="row">
-                                <label for="generate-duration" class="col-sm-2">Duration <span class="small">(ms)</span></label>
-                                <input type="number" class="col-sm-2" id="generate-duration" value="5000" step="10" min="10" />
-                            </div>
-                            <div class="row">
-                                <label for="generate-step" class="col-sm-2">Step <span class="small">(ms)</span></label>
-                                <input type="number" class="col-sm-2" id="generate-step" value="10" step="10" min="10" />
+                            <div>
+                                <h3>Output:</h3>
+                                <textarea class="form-control" id="generate-output" rows="5"></textarea>
                             </div>
                         </div>
-                        <div>
-                            <h3>Output:</h3>
-                            <textarea class="form-control" id="generate-output" rows="5"></textarea>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" id="generate-button">Generate</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                         </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" id="generate-button">Generate</button>
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <script src="WebFiles/simulator.js"></script>
-    <script src="WebFiles/generator.js"></script>
-    <script src="WebFiles/api-interaction.js"></script>
-</body>
-</html>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+        <script src="WebFiles/simulator.js"></script>
+        <script src="WebFiles/generator.js"></script>
+        <script src="WebFiles/api-interaction.js"></script>
+    </body>
+    </html>
+    
