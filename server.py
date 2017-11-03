@@ -19,50 +19,50 @@ class Handler(http.server.SimpleHTTPRequestHandler):
     def do_GET(self):
         # Construct a server response.
         try:
-            self.send_response(200)
-            self.send_header('Content-type', "text/html")
-            self.end_headers()
-
-            if self.path == "/get/sequences/html":
-                for file in os.listdir(cfg.SEQUENCE_DIR):
-                    btnclass = "default"
-                    if not MANAGER.currentsequence is None and MANAGER.currentsequence.name == file:
-                        btnclass = "primary"
-
-                    self.wfile.write(bytearray(
-                        ('<button class="btn btn-' + btnclass + '">' + file + '</button>').encode()
-                        ))
-            elif self.path == "/get/sequences/":
-                for file in os.listdir(cfg.SEQUENCE_DIR):
-                    self.wfile.write(bytearray((file + "\n").encode()))
-            elif self.path == "/get/current/":
-                self.wfile.write(b"")
-                return
-                if MANAGER.currentsequence is not None:
-                    self.wfile.write(bytearray(MANAGER.currentsequence.name.encode()))
-                else:
-                    self.wfile.write(b"")
-            elif self.path == "/stop/":
-                self.wfile.write(b"")
-                return
-                MANAGER.stopcurrentsequence()
-                MANAGER.clear()
-            elif str(self.path).startswith("/set/"):
-                self.wfile.write(b"")
-                return
-                name = str(self.path)[5:]
-                self.wfile.write(b"")
-                path = os.path.join(cfg.SEQUENCE_DIR, name)
-                MANAGER.runsequence(s.Sequence.parsefile(path))
+            if  self.path.endswith(".js") or \
+                self.path.endswith(".css") or \
+                self.path.endswith(".ico") or \
+                self.path.endswith(".png" or \
+                self.path.endswith(".jpg")):
+                f = self.send_head()
+                if f:
+                    self.copyfile(f, self.wfile)
+                    f.close()
             else:
-                if self.path.endswith(".js") or self.path.endswith(".css") or self.path.endswith(".ico") or self.path.endswith(".png" or self.path.endswith(".jpg")):
-                    super(Handler, self).do_GET()
+                self.send_response(200)
+                self.send_header('Content-type', "text/html")
+                self.end_headers()
+
+                if self.path == "/get/sequences/html":
+                    for file in os.listdir(cfg.SEQUENCE_DIR):
+                        btnclass = "default"
+                        if not MANAGER.currentsequence is None and MANAGER.currentsequence.name == file:
+                            btnclass = "primary"
+
+                        self.wfile.write(bytearray(
+                            ('<button class="btn btn-' + btnclass + '">' + file + '</button>').encode()
+                            ))
+                elif self.path == "/get/sequences/":
+                    for file in os.listdir(cfg.SEQUENCE_DIR):
+                        self.wfile.write(bytearray((file + "\n").encode()))
+                elif self.path == "/get/current/":
+                    if MANAGER.currentsequence is not None:
+                        self.wfile.write(bytearray(MANAGER.currentsequence.name.encode()))
+                    else:
+                        self.wfile.write(b"")
+                elif self.path == "/stop/":
+                    self.wfile.write(b"")
+                    MANAGER.stopcurrentsequence()
+                    MANAGER.clear()
+                elif str(self.path).startswith("/set/"):
+                    name = str(self.path)[5:]
+                    self.wfile.write(b"")
+                    path = os.path.join(cfg.SEQUENCE_DIR, name)
+                    MANAGER.runsequence(s.Sequence.parsefile(path))
                 else:
                     f = open(cfg.HTML_FILE, "rb")
                     self.wfile.write(f.read())
-                f.close()
-
-            return
+                    f.close()
         except Exception as ex:
             print(ex)
             self.send_response(500)
