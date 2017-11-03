@@ -55,7 +55,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                 path = os.path.join(cfg.SEQUENCE_DIR, name)
                 MANAGER.runsequence(s.Sequence.parsefile(path))
             else:
-                if self.path.endswith(".js") or self.path.endswith(".css"):
+                if self.path.endswith(".js") or self.path.endswith(".css") or self.path.endswith(".ico") or self.path.endswith(".png" or self.path.endswith(".jpg")):
                     super(Handler, self).do_GET()
                 else:
                     f = open(cfg.HTML_FILE, "rb")
