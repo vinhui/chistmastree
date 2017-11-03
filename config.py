@@ -1,6 +1,6 @@
 from neopixel import ws
 
-HTML_FILE = "index.html"
+HTML_FILE = "WebFiles/index.html"
 PORT = 8000
 
 SEQUENCE_DIR = "Sequences/"
