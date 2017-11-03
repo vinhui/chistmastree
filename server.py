@@ -82,6 +82,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
 MANAGER = s.SequenceManager()
 
-print('Server listening on port {}...'.format(cfg.PORT))
-httpd = StoppableHTTPServer(('', cfg.PORT), Handler)
-httpd.run()
+if __name__ == '__main__':
+    print('Server listening on port {}...'.format(cfg.PORT))
+    HTTPD = StoppableHTTPServer(('', cfg.PORT), Handler)
+    HTTPD.run()
