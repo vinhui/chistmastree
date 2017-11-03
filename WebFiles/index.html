@@ -151,52 +151,8 @@
             </div>
         </div>
     </div>
-    <script type="text/javascript">
-        $(".alert").hide();
-
-        $("#sequences").on('click', 'button', function () {
-            url = "/set/" + $(this).text();
-            if($(this).hasClass("btn-primary")) {
-                url = "/stop/";
-            }
-            $.get(url, function (data, status) {
-                updateSequences();
-                connectionSuccess();
-            })
-            .fail(connectionFailed);
-        });
-
-        $(".row").on('click', '#run-sequence-remote', function () {
-            $.ajax({
-                type: "POST",
-                url: "/set/",
-                data: $("textarea[name='sequence-data']").val()
-            }, function(){
-                connectionSuccess();
-            })
-            .fail(connectionFailed);
-        });
-
-        updateSequences();
-        setInterval(updateSequences, 5000);
-
-        function connectionFailed() {
-            $(".alert").show();
-        }
-
-        function connectionSuccess() {
-            $(".alert").hide();
-        }
-
-        function updateSequences() {
-            $.get("/get/sequences/html", function (data, status) {
-                $("#sequences").html(data);
-                connectionSuccess();
-            })
-            .fail(connectionFailed);
-        }
-    </script>
     <script src="WebFiles/simulator.js"></script>
     <script src="WebFiles/generator.js"></script>
+    <script src="WebFiles/api-interaction.js"></script>
 </body>
 </html>
