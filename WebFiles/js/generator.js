@@ -3,6 +3,11 @@ $(document).ready(function() {
         generateFade();
         $("#generate-output").effect("highlight");
     });
+    $("#generate-copy").click(function(){
+        $("#generate-output").select();
+        document.execCommand('copy');
+    });
+
     function remGradientColor() {
         $(".generate-color:last").parent().remove();
         $(".generate-color-rem:last").show();
@@ -45,9 +50,9 @@ $(document).ready(function() {
             }
         }
 
-    var endrgb = hexToRgb(colors[colors.length - 1]);
-    output += startLed+","+endLed+","+endrgb[0]+","+endrgb[1]+","+endrgb[2]+","+step;
-    $("#generate-output").val(output);
+        var endrgb = hexToRgb(colors[colors.length - 1]);
+        output += startLed+","+endLed+","+endrgb[0]+","+endrgb[1]+","+endrgb[2]+","+step;
+        $("#generate-output").val(output);
     }
 
     // https://gist.github.com/rosszurowski/67f04465c424a9bc0dae

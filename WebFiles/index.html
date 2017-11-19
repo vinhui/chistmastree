@@ -25,7 +25,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-lg-4">
+            <div class="col-lg-3">
                 <div class="panel panel-default">
                     <div class="panel-heading">Set Sequence</div>
                     <div class="panel-body">
@@ -34,7 +34,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-8">
+            <div class="col-lg-9">
                 <div class="panel panel-default">
                     <div class="panel-heading">Sequence Editor</div>
                     <div class="panel-body">
@@ -45,7 +45,7 @@
                         </div>
                         <div class="row">
                             <label for="led-count" class="col-lg-2 control-label">Led count</label>
-                            <div class="col-lg-2">
+                            <div class="col-lg-10">
                                 <input type="number" name="led-count" id="led-count" data-cip-id="led-count" value="30" />
                             </div>
                         </div>
@@ -90,10 +90,10 @@
                         </div>
                         <div class="row">
                             <div class="col-lg-12">
-                                <button class="btn btn-default pull-left" data-toggle="modal" data-target="#generateModal">Generator</button>
-                                <button class="btn btn-default pull-right" id="run-sequence-remote">Run on tree</button>
-                                <button class="btn btn-success pull-right" id="run-sequence">Test</button>
-                                <button class="btn btn-default pull-right" id="stop-sequence">Stop</button>
+                                <button class="btn btn-default float-left" data-toggle="modal" data-target="#generateModal">Generator</button>
+                                <button class="btn btn-default float-right" id="run-sequence-remote">Run on tree</button>
+                                <button class="btn btn-success float-right" id="run-sequence">Test</button>
+                                <button class="btn btn-default float-right" id="stop-sequence">Stop</button>
                             </div>
                         </div>
                     </div>
@@ -104,8 +104,8 @@
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
                         <h2 class="modal-title">Generate</h2>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
                     </div>
                     <div class="modal-body">
                         <div class="form-group form-group-sm">
@@ -136,8 +136,13 @@
                             </div>
                         </div>
                         <div>
-                            <h3>Output:</h3>
-                            <textarea class="form-control" id="generate-output" rows="5"></textarea>
+                            <div class="col-lg-12 row">
+                                <h3 class="col-lg-11">Output:</h3>
+                                <button class="col-lg-1 btn btn-default" id="generate-copy">Copy</button>
+                            </div>
+                            <div class="col-lg-13 row">
+                                <textarea class="form-control" id="generate-output" rows="5"></textarea>
+                            </div>
                         </div>
                     </div>
                     <div class="modal-footer">
