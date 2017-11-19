@@ -37,7 +37,7 @@ $(document).ready(function() {
         $(".strip-tester").html("");
 
         for (i = 0; i < ledCount; i++) {
-            $(".strip-tester").append('<li class="list-group-item pull-left" style="padding:0px; width: 20px; height: 20px; background-color: black">' + i + '</li>');
+            $(".strip-tester").append('<li class="list-inline-item pull-left" style="text-align: center; margin: 1px; padding-top: 3px; font-size: 8pt; width: 20px; height: 20px; background-color: black">' + i + '</li>');
         }
     }
 
