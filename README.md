@@ -12,7 +12,7 @@ Control your christmas tree with this simple program.
 2. Follow the instructions on https://learn.adafruit.com/neopixels-on-raspberry-pi/software to install the required library
 3. Wire up the hardware as explained on this page: https://learn.adafruit.com/neopixels-on-raspberry-pi/wiring
 4. Check the `config.py` script and check if you need to change any settings
-5. Run the server.py script as follows: `sudo python3 server.py`
+5. Run the server.py script as follows: `sudo python3 server.py` (yes, this needs to run as sudo since you need to be root to access the GPIO)
 6. Open your browser on and go to `http://[raspberry ip]:8000/` (the port is configurable in the config file)
 
 ## Notes
