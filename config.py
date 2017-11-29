@@ -1,4 +1,4 @@
-from neopixel import ws
+NO_PI = False
 
 HTML_FILE = "WebFiles/index.html"
 PORT = 8000
@@ -12,4 +12,7 @@ LED_DMA = 5
 LED_BRIGHTNESS = 255
 LED_INVERT = False
 LED_CHANNEL = 0
-LED_STRIP = ws.WS2811_STRIP_GRB
+
+if not NO_PI:
+    from neopixel import ws
+    LED_STRIP = ws.WS2811_STRIP_GRB
