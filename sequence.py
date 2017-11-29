@@ -124,7 +124,7 @@ class SequenceManager:
             self.strip.show()
 
     def setcolor(self, led, color, write=True):
-        if cfg.NO_PI:
+        if cfg.NO_PI and not self.closegui:
             self.guiupdatebuffer.append({'led': led, 'color': color})
         else:
             self.strip.setPixelColor(led, color.topixel())
