@@ -5,15 +5,23 @@ from time import sleep
 from random import randint
 from color import Color
 import config as cfg
-if not cfg.NO_PI:
+if cfg.NO_PI:
+    import tkinter
+else:
     from neopixel import Adafruit_NeoPixel
 
 class SequenceManager:
     def __init__(self):
         self.currentsequence = None
-        self.thread = None
+        self.sequencethread = None
 
-        if not cfg.NO_PI:
+        if cfg.NO_PI:
+            self.closegui = False
+            self.guiupdatebuffer = []
+
+            self.guithread = Thread(target=self.createwindow)
+            self.guithread.start()
+        else:
             self.strip = Adafruit_NeoPixel(
                 cfg.LED_COUNT,
                 cfg.LED_DATA_PIN,
@@ -25,10 +33,54 @@ class SequenceManager:
                 cfg.LED_STRIP)
             self.strip.begin()
 
+    def createwindow(self):
+        itemsize = 30       # in pixels
+        refreshrate = 10    # in ms
+
+        windowcanvasleds = [None] * cfg.LED_COUNT
+
+        window = tkinter.Tk()
+        window.title("Christmas Tree DEBUG")
+        windowcanvas = tkinter.Canvas(
+            window,
+            bd=0,
+            highlightthickness=0,
+            relief=tkinter.RIDGE,
+            bg="black",
+            width=cfg.LED_COUNT * itemsize,
+            height=itemsize)
+
+        for i in range(cfg.LED_COUNT):
+            windowcanvasleds[i] = windowcanvas.create_rectangle(
+                i * itemsize,       # X min
+                0,                  # Y min
+                (i + 1) * itemsize, # X max
+                itemsize,           # Y max
+                fill="black",
+                outline="black")
+
+        windowcanvas.pack()
+
+        while not self.closegui:
+            for item in self.guiupdatebuffer:
+                windowcanvas.itemconfig(
+                    windowcanvasleds[item['led']],
+                    fill=item['color'].tohex())
+
+            del self.guiupdatebuffer[:]
+
+            window.update_idletasks()
+            window.update()
+            sleep(refreshrate / 1000)
+
+        window.destroy()
+
     def stop(self):
         self.stopcurrentsequence()
         sleep(2)
         self.clear()
+        if cfg.NO_PI:
+            self.closegui = True
 
     def runsequence(self, sequence):
         if self.currentsequence == sequence:
@@ -36,12 +88,12 @@ class SequenceManager:
 
         print("Running sequence {}".format(sequence.name))
         self.currentsequence = sequence
-        self.thread = Thread(target=self.runthread)
-        self.thread.start()
+        self.sequencethread = Thread(target=self.runthread)
+        self.sequencethread.start()
 
     def stopcurrentsequence(self):
         self.currentsequence = None
-        self.thread = None
+        self.sequencethread = None
 
     def runthread(self):
         seq = self.currentsequence
@@ -57,7 +109,7 @@ class SequenceManager:
                     sleep(max(x.delay, 10)/1000)
 
         if seq == self.currentsequence:
-            self.thread = None
+            self.sequencethread = None
 
     def clear(self):
         self.setrangecolor(0, cfg.LED_COUNT, Color.black())
@@ -72,7 +124,9 @@ class SequenceManager:
             self.strip.show()
 
     def setcolor(self, led, color, write=True):
-        if not cfg.NO_PI:
+        if cfg.NO_PI:
+            self.guiupdatebuffer.append({'led': led, 'color': color})
+        else:
             self.strip.setPixelColor(led, color.topixel())
             if write:
                 self.strip.show()

@@ -18,7 +18,7 @@ Control your christmas tree with this simple program.
 ## Notes
 If you want to add new sequences, you can place the text file in the `Sequences` directory and it'll be automatically updated. You don't have to restart the server for it to be recognized.
 
-You can also test this program when you're not on a Raspberry Pi. You just need to set `NO_PI` to `True` in `config.py`.
+You can also test this program when you're not on a Raspberry Pi. You need to set `NO_PI` to `True` in `config.py` and you'll also need to install Tkinter: `sudo apt install python3-tk`. Tkinter needs to be installed for the window that will be used instead to show what otherwise would be on the LED strip.
 
 ## API
 You can also control the strip with HTTP requests.

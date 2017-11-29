@@ -11,6 +11,9 @@ class Color:
     def topixel(self):
         return (self.white << 24) | (self.r << 16)| (self.g << 8) | self.b
 
+    def tohex(self):
+        return '#%02x%02x%02x' % (self.r, self.g, self.b)
+
     @staticmethod
     def white():
         return Color(255, 255, 255)
