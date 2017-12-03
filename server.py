@@ -1,8 +1,9 @@
 import http.server
 import os
-from time import sleep
 import config as cfg
 import sequence as s
+if cfg.REQUIRES_AUTH or cfg.USE_ADMIN_AUTH:
+    import base64
 
 class StoppableHTTPServer(http.server.HTTPServer):
     def run(self):
@@ -19,6 +20,9 @@ class Handler(http.server.SimpleHTTPRequestHandler):
     def do_GET(self):
         # Construct a server response.
         try:
+            if not self.check_auth():
+                return
+
             if  self.path.endswith(".js") or \
                 self.path.endswith(".css") or \
                 self.path.endswith(".ico") or \
@@ -66,9 +70,13 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         except Exception as ex:
             print(ex)
             self.send_response(500)
+            self.end_headers()
 
     def do_POST(self):
         try:
+            if not self.check_auth(True):
+                return
+
             self.send_response(200)
             self.send_header('Content-type', "text/html")
             self.end_headers()
@@ -87,6 +95,43 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         except Exception as ex:
             print(ex)
             self.send_response(500)
+            self.end_headers()
+
+    def check_auth(self, adminonly=False):
+        success = True
+        admincorrect = False
+        usercorrect = False
+
+        authheader = self.headers['Authorization']
+        if authheader and \
+            authheader.startswith('Basic'):
+            credentials = authheader.split(' ')[1]
+            decoded = base64.b64decode(bytes(credentials, 'utf8')).decode('utf-8')
+            user, password = decoded.split(":")
+
+            admincorrect = \
+                user == cfg.AUTH_ADMIN_USER and \
+                password == cfg.AUTH_ADMIN_PASS
+
+            usercorrect = \
+                user == cfg.AUTH_USER and \
+                password == cfg.AUTH_PASS
+
+        if cfg.REQUIRES_AUTH or \
+            adminonly and cfg.USE_ADMIN_AUTH:
+            success = (adminonly and admincorrect) or \
+                        (not adminonly and (admincorrect or usercorrect))
+
+        if not success:
+            message = "The christmastree requires login" if not adminonly \
+                        else "For this part you need to login as admin"
+            self.send_response(401)
+            self.send_header(
+                'WWW-Authenticate',
+                'Basic realm="' + message + '"')
+            self.end_headers()
+
+        return success
 
 MANAGER = s.SequenceManager()
 

@@ -3,6 +3,15 @@ NO_PI = False
 HTML_FILE = "WebFiles/index.html"
 PORT = 8000
 
+REQUIRES_AUTH = False
+USE_ADMIN_AUTH = True
+
+AUTH_USER = "user"
+AUTH_PASS = "pass"
+AUTH_ADMIN_USER = "admin"
+AUTH_ADMIN_PASS = "pass"
+
+
 SEQUENCE_DIR = "Sequences/"
 
 LED_COUNT = 30

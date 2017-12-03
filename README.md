@@ -15,6 +15,10 @@ Control your christmas tree with this simple program.
 5. Run the server.py script as follows: `sudo python3 server.py` (yes, this needs to run as sudo since you need to be root to access the GPIO)
 6. Open your browser on and go to `http://[raspberry ip]:8000/` (the port is configurable in the config file)
 
+## Authentication
+__Change the username and password in the config file!__
+You can enable the requirement for authentication in the config file. Enabling this will require the user to login to access any page. By default there is some functionality that is only for admins, this can be disabled. Authentication is done with [HTTP Basic Auth](https://en.wikipedia.org/wiki/Basic_access_authentication).
+
 ## Notes
 If you want to add new sequences, you can place the text file in the `Sequences` directory and it'll be automatically updated. You don't have to restart the server for it to be recognized.
 
@@ -23,10 +27,10 @@ You can also test this program when you're not on a Raspberry Pi. You need to se
 ## API
 You can also control the strip with HTTP requests.
 
-| Url                   | Method    | Description |
-|-----------------------|-----------|-------------|
-|`/get/sequences/`      | GET       | Get a list of available sequences, one item on each line |
-|`/get/current/`        | GET       | Get the name of the currently running sequence |
-|`/set/[name]`          | GET       | Play a sequence by name |
-|`/set/`                | POST      | Play a sequence file that is passed as the body of the POST request |
-|`/stop/`               | GET       | Stop any running sequence |
+| Url              | Admin auth  | Method    | Description |
+|------------------|----------------|-----------|-------------|
+|`/get/sequences/` | No             | GET       | Get a list of available sequences, one item on each line |
+|`/get/current/`   | No             | GET       | Get the name of the currently running sequence |
+|`/set/[name]`     | No             | GET       | Play a sequence by name |
+|`/set/`           | Yes            | POST      | Play a sequence file that is passed as the body of the POST request |
+|`/stop/`          | No             | GET       | Stop any running sequence |
