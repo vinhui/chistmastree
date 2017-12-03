@@ -11,7 +11,6 @@ AUTH_PASS = "pass"
 AUTH_ADMIN_USER = "admin"
 AUTH_ADMIN_PASS = "pass"
 
-
 SEQUENCE_DIR = "Sequences/"
 
 LED_COUNT = 30
@@ -25,3 +24,5 @@ LED_CHANNEL = 0
 if not NO_PI:
     from neopixel import ws
     LED_STRIP = ws.WS2811_STRIP_GRB
+
+VERBOSE_LOGGING = False

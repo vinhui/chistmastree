@@ -6,7 +6,7 @@ class Color:
         self.white = 0
 
     def __str__(self):
-        return "{},{},{}".format(self.r, self.g, self.b)
+        return "{0},{1},{2}".format(self.r, self.g, self.b)
 
     def topixel(self):
         return (self.white << 24) | (self.r << 16)| (self.g << 8) | self.b

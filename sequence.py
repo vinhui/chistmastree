@@ -86,7 +86,8 @@ class SequenceManager:
         if self.currentsequence == sequence:
             return
 
-        print("Running sequence {}".format(sequence.name))
+        if cfg.VERBOSE_LOGGING:
+            print("Running sequence {}".format(sequence.name))
         self.currentsequence = sequence
         self.sequencethread = Thread(target=self.runthread)
         self.sequencethread.start()
@@ -94,6 +95,7 @@ class SequenceManager:
     def stopcurrentsequence(self):
         self.currentsequence = None
         self.sequencethread = None
+        print("Stopping running sequence")
 
     def runthread(self):
         seq = self.currentsequence

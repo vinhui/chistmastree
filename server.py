@@ -14,6 +14,7 @@ class StoppableHTTPServer(http.server.HTTPServer):
             pass
         finally:
             # Clean-up server (close socket, etc.)
+            print("Stopping server")
             self.server_close()
             MANAGER.stop()
 
@@ -83,9 +84,11 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                         self.parsefile(f).encode('utf-8')
                     )
         except Exception as ex:
-            print(ex)
+            print("ERROR: {0}".format(ex))
             self.send_response(500)
             self.end_headers()
+            if cfg.VERBOSE_LOGGING:
+                raise ex
 
     def do_POST(self):
         try:
@@ -108,9 +111,15 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             else:
                 self.wfile.write(b"")
         except Exception as ex:
-            print(ex)
+            print("ERROR: {0}".format(ex))
             self.send_response(500)
             self.end_headers()
+            if cfg.VERBOSE_LOGGING:
+                raise ex
+
+    def log_message(self, format, *args):
+        if cfg.VERBOSE_LOGGING:
+            http.server.SimpleHTTPRequestHandler.log_message(self, format, *args)
 
     def check_auth(self, adminonly=False):
         success = True
@@ -138,6 +147,8 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                         (not adminonly and (admincorrect or usercorrect))
 
         if not success:
+            if cfg.VERBOSE_LOGGING:
+                print("Showing login prompt to user")
             message = "The christmastree requires login" if not adminonly \
                         else "For this part you need to login as admin"
             self.send_response(401)
@@ -148,6 +159,10 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
         self.isuser = usercorrect or admincorrect
         self.isadmin = not cfg.USE_ADMIN_AUTH or admincorrect
+
+        if success and cfg.VERBOSE_LOGGING:
+            print("is user: {0}, is admin: {1}".format(self.isuser, self.isadmin))
+
         return success
 
     def parsefile(self, file):
@@ -163,6 +178,6 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 MANAGER = s.SequenceManager()
 
 if __name__ == '__main__':
-    print('Server listening on port {}...'.format(cfg.PORT))
+    print('Server listening on port {0}...'.format(cfg.PORT))
     HTTPD = StoppableHTTPServer(('', cfg.PORT), Handler)
     HTTPD.run()
