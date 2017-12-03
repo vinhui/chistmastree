@@ -1,7 +1,7 @@
 NO_PI = False
 
 HTML_FILE = "WebFiles/index.html"
-PORT = 8000
+PORT = 80
 
 REQUIRES_AUTH = False
 USE_ADMIN_AUTH = True
