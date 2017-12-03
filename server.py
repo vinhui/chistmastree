@@ -1,5 +1,6 @@
 import http.server
 import os
+import re
 import config as cfg
 import sequence as s
 if cfg.REQUIRES_AUTH or cfg.USE_ADMIN_AUTH:
@@ -17,6 +18,11 @@ class StoppableHTTPServer(http.server.HTTPServer):
             MANAGER.stop()
 
 class Handler(http.server.SimpleHTTPRequestHandler):
+    def __init__(self, request, client_address, server):
+        super(Handler, self).__init__(request, client_address, server)
+        self.isuser = False
+        self.isadmin = False
+
     def do_GET(self):
         # Construct a server response.
         try:
@@ -33,9 +39,17 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                     self.copyfile(f, self.wfile)
                     f.close()
             else:
-                self.send_response(200)
-                self.send_header('Content-type', "text/html")
-                self.end_headers()
+                if self.path == "/auth" and not self.isuser:
+                    self.send_response(401)
+                    self.send_header(
+                        'WWW-Authenticate',
+                        'Basic realm="Authenticate"')
+                    self.end_headers()
+                    return
+                else:
+                    self.send_response(200)
+                    self.send_header('Content-type', "text/html")
+                    self.end_headers()
 
                 if self.path == "/get/sequences/html":
                     for file in os.listdir(cfg.SEQUENCE_DIR):
@@ -64,9 +78,10 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                     path = os.path.join(cfg.SEQUENCE_DIR, name)
                     MANAGER.runsequence(s.Sequence.parsefile(path))
                 else:
-                    f = open(cfg.HTML_FILE, "rb")
-                    self.wfile.write(f.read())
-                    f.close()
+                    f = open(cfg.HTML_FILE, "r").read()
+                    self.wfile.write(
+                        self.parsefile(f).encode('utf-8')
+                    )
         except Exception as ex:
             print(ex)
             self.send_response(500)
@@ -131,7 +146,19 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                 'Basic realm="' + message + '"')
             self.end_headers()
 
+        self.isuser = usercorrect or admincorrect
+        self.isadmin = not cfg.USE_ADMIN_AUTH or admincorrect
         return success
+
+    def parsefile(self, file):
+        result = file
+        if not self.isadmin:
+            regex = re.compile(r"(\#admin.*\#end)", re.IGNORECASE | re.DOTALL)
+            result = re.sub(regex, '', result)
+        else:
+            result = result.replace("#admin", "")
+            result = result.replace("#end", "")
+        return result
 
 MANAGER = s.SequenceManager()
 
