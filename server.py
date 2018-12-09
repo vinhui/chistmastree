@@ -77,7 +77,10 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                     name = str(self.path)[5:]
                     self.wfile.write(b"")
                     path = os.path.join(cfg.SEQUENCE_DIR, name)
-                    MANAGER.runsequence(s.Sequence.parsefile(path))
+                    try:
+                        MANAGER.runsequence(s.Sequence.parsefile(path))
+                    except FileNotFoundError:
+                        print("Sequence '{0}' does not exist!".format(path))
                 else:
                     f = open(cfg.HTML_FILE, "r").read()
                     self.wfile.write(
