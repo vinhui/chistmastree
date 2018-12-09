@@ -176,6 +176,14 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         return result
 
 MANAGER = s.SequenceManager()
+if cfg.STARTUP_SEQUENCE:
+    if cfg.VERBOSE_LOGGING:
+        print("Going to run the startup sequence")
+    path = os.path.join(cfg.SEQUENCE_DIR, cfg.STARTUP_SEQUENCE)
+    try:
+        MANAGER.runsequence(s.Sequence.parsefile(path))
+    except FileNotFoundError:
+        print("Startup sequence '{0}' does not exist!".format(path))
 
 if __name__ == '__main__':
     print('Server listening on port {0}...'.format(cfg.PORT))
