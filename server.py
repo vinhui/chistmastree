@@ -36,11 +36,11 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             if not self.check_auth():
                 return
 
-            if  self.path.endswith(".js") or \
-                self.path.endswith(".css") or \
-                self.path.endswith(".ico") or \
-                self.path.endswith(".png" or \
-                self.path.endswith(".jpg")):
+            if self.path.endswith(".js") or \
+                    self.path.endswith(".css") or \
+                    self.path.endswith(".ico") or \
+                    self.path.endswith(".png" or \
+                                       self.path.endswith(".jpg")):
                 f = self.send_head()
                 if f:
                     self.copyfile(f, self.wfile)
@@ -66,7 +66,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
                         self.wfile.write(bytearray(
                             ('<button class="btn btn-' + btnclass + '">' + file + '</button>').encode()
-                            ))
+                        ))
                 elif self.path == "/get/sequences/":
                     for file in os.listdir(cfg.SEQUENCE_DIR):
                         self.wfile.write(bytearray((file + "\n").encode()))
@@ -137,7 +137,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
         authheader = self.headers['Authorization']
         if authheader and \
-            authheader.startswith('Basic'):
+                authheader.startswith('Basic'):
             credentials = authheader.split(' ')[1]
             decoded = base64.b64decode(bytes(credentials, 'utf8')).decode('utf-8')
             user, password = decoded.split(":")
@@ -151,15 +151,15 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                 password == cfg.AUTH_PASS
 
         if cfg.REQUIRES_AUTH or \
-            adminonly and cfg.USE_ADMIN_AUTH:
+                adminonly and cfg.USE_ADMIN_AUTH:
             success = (adminonly and admincorrect) or \
-                        (not adminonly and (admincorrect or usercorrect))
+                      (not adminonly and (admincorrect or usercorrect))
 
         if not success:
             if cfg.VERBOSE_LOGGING:
                 print("Showing login prompt to user")
             message = "The christmastree requires login" if not adminonly \
-                        else "For this part you need to login as admin"
+                else "For this part you need to login as admin"
             self.send_response(401)
             self.send_header(
                 'WWW-Authenticate',
