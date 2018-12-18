@@ -61,8 +61,17 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                     self.send_header('Content-type', "text/html")
                     self.end_headers()
 
-                if self.path == "/get/sequences/html":
+                if self.path == "/get/sequences/html/":
                     for file in os.listdir(cfg.SEQUENCE_DIR):
+                        btnclass = "default"
+                        if not PLAYER.currentplaylist is None and PLAYER.currentplaylist.name == file:
+                            btnclass = "primary"
+
+                        self.wfile.write(bytearray(
+                            ('<button class="btn btn-' + btnclass + '">' + file + '</button>').encode()
+                        ))
+                elif self.path == "/get/playlists/html/":
+                    for file in os.listdir(cfg.PLAYLIST_DIR):
                         btnclass = "default"
                         if not PLAYER.currentplaylist is None and PLAYER.currentplaylist.name == file:
                             btnclass = "primary"
@@ -72,6 +81,9 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                         ))
                 elif self.path == "/get/sequences/":
                     for file in os.listdir(cfg.SEQUENCE_DIR):
+                        self.wfile.write(bytearray((file + "\n").encode()))
+                elif self.path == "/get/playlists/":
+                    for file in os.listdir(cfg.PLAYLIST_DIR):
                         self.wfile.write(bytearray((file + "\n").encode()))
                 elif self.path == "/get/current/":
                     if PLAYER.currentplaylist is not None:

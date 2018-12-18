@@ -1,7 +1,9 @@
 $(document).ready(function() {
     $(".alert").hide();
     updateSequences();
+    updatePlaylists();
     setInterval(updateSequences, 5000);
+    setInterval(updatePlaylists, 5000);
 
     $("#sequences").on('click', 'button', function () {
         url = "/set/sequence/" + $(this).text();
@@ -9,6 +11,20 @@ $(document).ready(function() {
             url = "/stop/";
         }
         $.get(url, function (data, status) {
+            updateSequences();
+            updatePlaylists();
+            connectionSuccess();
+        })
+        .fail(connectionFailed);
+    });
+
+    $("#playlists").on('click', 'button', function () {
+        url = "/set/playlist/" + $(this).text();
+        if($(this).hasClass("btn-primary")) {
+            url = "/stop/";
+        }
+        $.get(url, function (data, status) {
+            updatePlaylists();
             updateSequences();
             connectionSuccess();
         })
@@ -35,8 +51,16 @@ $(document).ready(function() {
     }
 
     function updateSequences() {
-        $.get("/get/sequences/html", function (data, status) {
+        $.get("/get/sequences/html/", function (data, status) {
             $("#sequences").html(data);
+            connectionSuccess();
+        })
+        .fail(connectionFailed);
+    }
+
+    function updatePlaylists() {
+        $.get("/get/playlists/html/", function (data, status) {
+            $("#playlists").html(data);
             connectionSuccess();
         })
         .fail(connectionFailed);

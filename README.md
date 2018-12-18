@@ -31,6 +31,7 @@ You can also control the strip with HTTP requests.
 | Url              | Admin auth  | Method    | Description |
 |------------------|----------------|-----------|-------------|
 |`/get/sequences/` | No             | GET       | Get a list of available sequences, one item on each line |
+|`/get/playlists/` | No             | GET       | Get a list of available playlists, one item on each line |
 |`/get/current/`   | No             | GET       | Get the name of the currently running sequence |
 |`/set/sequence/[name]`     | No             | GET       | Play a sequence by name |
 |`/set/playlist/[name]`     | No             | GET       | Play a playlist by name |
