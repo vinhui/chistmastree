@@ -1,8 +1,14 @@
 import http.server
 import os
 import re
+
 import config as cfg
-import sequence as s
+
+if not cfg.NO_PI:
+    from neopixelSequencePlayer import NeopixelSequencePlayer
+from sequence import Sequence
+from sequencePlayerWindow import SequencePlayerWindow
+
 if cfg.REQUIRES_AUTH or cfg.USE_ADMIN_AUTH:
     import base64
 
@@ -16,7 +22,7 @@ class StoppableHTTPServer(http.server.HTTPServer):
             # Clean-up server (close socket, etc.)
             print("Stopping server")
             self.server_close()
-            MANAGER.stop()
+            PLAYER.stop()
 
 class Handler(http.server.SimpleHTTPRequestHandler):
     def __init__(self, request, client_address, server):
@@ -55,7 +61,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                 if self.path == "/get/sequences/html":
                     for file in os.listdir(cfg.SEQUENCE_DIR):
                         btnclass = "default"
-                        if not MANAGER.currentsequence is None and MANAGER.currentsequence.name == file:
+                        if not PLAYER.currentplaylist is None and PLAYER.currentplaylist.name == file:
                             btnclass = "primary"
 
                         self.wfile.write(bytearray(
@@ -65,20 +71,20 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                     for file in os.listdir(cfg.SEQUENCE_DIR):
                         self.wfile.write(bytearray((file + "\n").encode()))
                 elif self.path == "/get/current/":
-                    if MANAGER.currentsequence is not None:
-                        self.wfile.write(bytearray(MANAGER.currentsequence.name.encode()))
+                    if PLAYER.currentplaylist is not None:
+                        self.wfile.write(bytearray(PLAYER.currentplaylist.name.encode()))
                     else:
                         self.wfile.write(b"")
                 elif self.path == "/stop/":
                     self.wfile.write(b"")
-                    MANAGER.stopcurrentsequence()
-                    MANAGER.clear()
+                    PLAYER.stopcurrentplaylist()
+                    PLAYER.clear()
                 elif str(self.path).startswith("/set/"):
                     name = str(self.path)[5:]
                     self.wfile.write(b"")
                     path = os.path.join(cfg.SEQUENCE_DIR, name)
                     try:
-                        MANAGER.runsequence(s.Sequence.parsefile(path))
+                        PLAYER.runsequence(Sequence.parsefile(path))
                     except FileNotFoundError:
                         print("Sequence '{0}' does not exist!".format(path))
                 else:
@@ -109,8 +115,8 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                 post_data = self.rfile.read(content_length)
                 post_string = post_data.decode("utf-8")
 
-                seq = s.Sequence.parsestring(post_string)
-                MANAGER.runsequence(seq)
+                seq = Sequence.parsestring(post_string)
+                PLAYER.runsequence(seq)
             else:
                 self.wfile.write(b"")
         except Exception as ex:
@@ -178,13 +184,18 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             result = result.replace("#end", "")
         return result
 
-MANAGER = s.SequenceManager()
+
+if cfg.NO_PI:
+    PLAYER = SequencePlayerWindow()
+else:
+    PLAYER = NeopixelSequencePlayer()
+
 if cfg.STARTUP_SEQUENCE:
     if cfg.VERBOSE_LOGGING:
         print("Going to run the startup sequence")
     path = os.path.join(cfg.SEQUENCE_DIR, cfg.STARTUP_SEQUENCE)
     try:
-        MANAGER.runsequence(s.Sequence.parsefile(path))
+        PLAYER.runsequence(Sequence.parsefile(path))
     except FileNotFoundError:
         print("Startup sequence '{0}' does not exist!".format(path))
 
