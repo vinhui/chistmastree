@@ -35,3 +35,4 @@ You can also control the strip with HTTP requests.
 |`/set/[name]`     | No             | GET       | Play a sequence by name |
 |`/set/`           | Yes            | POST      | Play a sequence file that is passed as the body of the POST request |
 |`/stop/`          | No             | GET       | Stop any running sequence |
+|`/playlist/`      | Yes            | POST      | Play a playlist file that is passed as the body of the POST request |

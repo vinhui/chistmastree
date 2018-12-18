@@ -3,6 +3,7 @@ import os
 import re
 
 import config as cfg
+from sequencePlaylist import SequencePlaylist
 
 if not cfg.NO_PI:
     from neopixelSequencePlayer import NeopixelSequencePlayer
@@ -11,6 +12,7 @@ from sequencePlayerWindow import SequencePlayerWindow
 
 if cfg.REQUIRES_AUTH or cfg.USE_ADMIN_AUTH:
     import base64
+
 
 class StoppableHTTPServer(http.server.HTTPServer):
     def run(self):
@@ -23,6 +25,7 @@ class StoppableHTTPServer(http.server.HTTPServer):
             print("Stopping server")
             self.server_close()
             PLAYER.stop()
+
 
 class Handler(http.server.SimpleHTTPRequestHandler):
     def __init__(self, request, client_address, server):
@@ -108,17 +111,17 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             self.send_header('Content-type', "text/html")
             self.end_headers()
 
+            self.wfile.write(b"")
+            content_length = int(self.headers['Content-Length'])
+            post_data = self.rfile.read(content_length)
+            post_string = post_data.decode("utf-8")
+
             if self.path == "/set/":
-                self.wfile.write(b"")
-
-                content_length = int(self.headers['Content-Length'])
-                post_data = self.rfile.read(content_length)
-                post_string = post_data.decode("utf-8")
-
                 seq = Sequence.parsestring(post_string)
                 PLAYER.runsequence(seq)
-            else:
-                self.wfile.write(b"")
+            elif self.path == "/playlist/":
+                playlist = SequencePlaylist.parsestring(post_string)
+                PLAYER.runplaylist(playlist)
         except Exception as ex:
             print("ERROR: {0}".format(ex))
             self.send_response(500)
