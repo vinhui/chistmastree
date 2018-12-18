@@ -18,7 +18,7 @@ $(document).ready(function() {
     $(".row").on('click', '#run-sequence-remote', function () {
         $.ajax({
             type: "POST",
-            url: "/set/",
+            url: "/set/sequence/",
             data: $("textarea[name='sequence-data']").val()
         }, function(){
             connectionSuccess();
