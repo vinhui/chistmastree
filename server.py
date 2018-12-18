@@ -200,7 +200,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
     def parsefile(self, file):
         result = file
         if not self.isadmin:
-            regex = re.compile(r"(\#admin.*\#end)", re.IGNORECASE | re.DOTALL)
+            regex = re.compile(r"(\#admin.*?\#end)", re.IGNORECASE | re.DOTALL)
             result = re.sub(regex, '', result)
         else:
             result = result.replace("#admin", "")
