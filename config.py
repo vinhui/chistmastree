@@ -11,6 +11,7 @@ AUTH_PASS = "pass"
 AUTH_ADMIN_USER = "admin"
 AUTH_ADMIN_PASS = "pass"
 
+STARTUP_PLAYLIST = ""
 STARTUP_SEQUENCE = "red-green"
 SEQUENCE_DIR = "Sequences/"
 PLAYLIST_DIR = "Playlist/"

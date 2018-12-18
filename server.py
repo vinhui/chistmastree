@@ -218,7 +218,15 @@ if cfg.NO_PI:
 else:
     PLAYER = NeopixelSequencePlayer()
 
-if cfg.STARTUP_SEQUENCE:
+if cfg.STARTUP_PLAYLIST:
+    if cfg.VERBOSE_LOGGING:
+        print("Going to run the startup playlist")
+    path = os.path.join(cfg.PLAYLIST_DIR, cfg.STARTUP_PLAYLIST)
+    try:
+        PLAYER.runplaylist(SequencePlaylist.parsefile(path))
+    except FileNotFoundError:
+        print("Startup playlist '{0}' does not exist!".format(path))
+elif cfg.STARTUP_SEQUENCE:
     if cfg.VERBOSE_LOGGING:
         print("Going to run the startup sequence")
     path = os.path.join(cfg.SEQUENCE_DIR, cfg.STARTUP_SEQUENCE)
