@@ -1,6 +1,7 @@
 import os
 from random import randint
 
+import config as cfg
 from sequence import Sequence
 
 
@@ -46,13 +47,14 @@ class SequencePlaylist:
 
         sequences = []
 
-        for i, line in string.splitlines():
+        for line in string.splitlines():
             line = line.strip()
 
             if line == "" or line.startswith("#") or line.startswith(";"):
                 continue
 
-            sequences.append(Sequence.parsefile(line))
+            path = os.path.join(cfg.SEQUENCE_DIR, line)
+            sequences.append(Sequence.parsefile(path))
 
         if len(sequences) == 0:
             return None
