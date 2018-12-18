@@ -19,31 +19,26 @@ class Sequence:
         return self.name
 
     @staticmethod
-    def parsefile(path):
+    def parsefile(path: str):
         print("Parsing sequence file {}".format(path))
         file = open(path)
-        seq = Sequence()
-        seq.name = os.path.basename(os.path.splitext(path)[0])
+        name = os.path.basename(os.path.splitext(path)[0])
 
-        for i, line in enumerate(iter(file.readline, '')):
-            line = line.strip()
+        seq = Sequence.parsestring(file.read(), name, False)
 
-            if line == "" or line.startswith("#") or line.startswith(";"):
-                continue
-
-            data = SequenceData.parseline(line)
-            if data != None:
-                seq.data.append(data)
-            else:
-                logging.error("Failed to parse line %s in file \\'%s\\'", i, path)
-
+        file.close()
         return seq
 
     @staticmethod
-    def parsestring(string):
-        print("Parsing sequence string")
+    def parsestring(string: str, name: str = None, logtext: bool = True):
+        if logtext:
+            print("Parsing sequence string")
+
         seq = Sequence()
-        seq.name = "String sequence " + str(randint(10000, 99999))
+        if name is None:
+            seq.name = "String sequence " + str(randint(10000, 99999))
+        else:
+            seq.name = name
 
         for i, line in enumerate(iter(string.splitlines())):
             line = line.strip()
@@ -52,12 +47,13 @@ class Sequence:
                 continue
 
             data = SequenceData.parseline(line)
-            if data != None:
+            if data is not None:
                 seq.data.append(data)
             else:
                 logging.error("Failed to parse line %s (%s)", i, line)
 
         return seq
+
 
 class SequenceData:
     def __init__(self, startID, endID, color, delay):
@@ -70,7 +66,7 @@ class SequenceData:
         return "{},{},{},{}".format(self.startid, self.endid, str(self.color), self.delay)
 
     @staticmethod
-    def parseline(line):
+    def parseline(line: str):
         items = line.split(",")
         if len(items) == 6:
             return SequenceData(
