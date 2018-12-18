@@ -25,7 +25,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-lg-3">
+            <div class="col-lg-2">
                 <div class="panel panel-default">
                     <div class="panel-heading">Set Sequence</div>
                     <div class="panel-body">
@@ -33,15 +33,29 @@
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="col-lg-4">
                 <div class="panel panel-default">
                     <div class="panel-heading">Set Playlist</div>
                     <div class="panel-body">
-                        <div class="btn-group-vertical" id="playlists">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="btn-group-vertical" id="playlists"></div>
+                            </div>
                         </div>
+#admin                  <div class="row" style="margin-top: 20px">
+                            <div class="col-lg-7">
+                                <textarea style="width: 100%" rows="5" name="playlist-data">red-green</textarea>
+                            </div>
+                            <div class="col-lg-5">
+                                <button class="btn btn-default float-right" id="run-playlist-remote">Run on tree</button>
+                            </div>
+                        </div>
+#end
                     </div>
                 </div>
             </div>
-            <div class="col-lg-9">
+            <div class="col-lg-6">
                 <div class="panel panel-default">
                     <div class="panel-heading">Sequence Editor</div>
                     <div class="panel-body">

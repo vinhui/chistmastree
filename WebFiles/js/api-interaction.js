@@ -42,6 +42,17 @@ $(document).ready(function() {
         .fail(connectionFailed);
     });
 
+    $(".row").on('click', '#run-playlist-remote', function () {
+        $.ajax({
+            type: "POST",
+            url: "/set/playlist/",
+            data: $("textarea[name='playlist-data']").val()
+        }, function(){
+            connectionSuccess();
+        })
+        .fail(connectionFailed);
+    });
+
     function connectionFailed() {
         $(".alert").show();
     }
