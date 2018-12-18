@@ -4,7 +4,7 @@ $(document).ready(function() {
     setInterval(updateSequences, 5000);
 
     $("#sequences").on('click', 'button', function () {
-        url = "/set/" + $(this).text();
+        url = "/set/sequence/" + $(this).text();
         if($(this).hasClass("btn-primary")) {
             url = "/stop/";
         }

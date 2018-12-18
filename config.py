@@ -13,6 +13,7 @@ AUTH_ADMIN_PASS = "pass"
 
 STARTUP_SEQUENCE = "red-green"
 SEQUENCE_DIR = "Sequences/"
+PLAYLIST_DIR = "Playlist/"
 
 LED_COUNT = 30
 LED_DATA_PIN = 18

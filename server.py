@@ -82,14 +82,22 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                     self.wfile.write(b"")
                     PLAYER.stopcurrentplaylist()
                     PLAYER.clear()
-                elif str(self.path).startswith("/set/"):
-                    name = str(self.path)[5:]
+                elif str(self.path).startswith("/set/sequence/"):
+                    name = str(self.path)[14:]
                     self.wfile.write(b"")
                     path = os.path.join(cfg.SEQUENCE_DIR, name)
                     try:
                         PLAYER.runsequence(Sequence.parsefile(path))
                     except FileNotFoundError:
                         print("Sequence '{0}' does not exist!".format(path))
+                elif str(self.path).startswith("/set/playlist/"):
+                    name = str(self.path)[14:]
+                    self.wfile.write(b"")
+                    path = os.path.join(cfg.PLAYLIST_DIR, name)
+                    try:
+                        PLAYER.runplaylist(SequencePlaylist.parsefile(path))
+                    except FileNotFoundError:
+                        print("Playlist '{0}' does not exist!".format(path))
                 else:
                     f = open(cfg.HTML_FILE, "r").read()
                     self.wfile.write(
@@ -116,10 +124,10 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             post_data = self.rfile.read(content_length)
             post_string = post_data.decode("utf-8")
 
-            if self.path == "/set/":
+            if self.path == "/set/sequence/":
                 seq = Sequence.parsestring(post_string)
                 PLAYER.runsequence(seq)
-            elif self.path == "/playlist/":
+            elif self.path == "/set/playlist/":
                 playlist = SequencePlaylist.parsestring(post_string)
                 PLAYER.runplaylist(playlist)
         except Exception as ex:

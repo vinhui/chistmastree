@@ -32,7 +32,8 @@ You can also control the strip with HTTP requests.
 |------------------|----------------|-----------|-------------|
 |`/get/sequences/` | No             | GET       | Get a list of available sequences, one item on each line |
 |`/get/current/`   | No             | GET       | Get the name of the currently running sequence |
-|`/set/[name]`     | No             | GET       | Play a sequence by name |
-|`/set/`           | Yes            | POST      | Play a sequence file that is passed as the body of the POST request |
+|`/set/sequence/[name]`     | No             | GET       | Play a sequence by name |
+|`/set/playlist/[name]`     | No             | GET       | Play a playlist by name |
 |`/stop/`          | No             | GET       | Stop any running sequence |
-|`/playlist/`      | Yes            | POST      | Play a playlist file that is passed as the body of the POST request |
+|`/set/sequence/`           | Yes            | POST      | Play a sequence file that is passed as the body of the POST request |
+|`/set/playlist/`      | Yes            | POST      | Play a playlist file that is passed as the body of the POST request |
