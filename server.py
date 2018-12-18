@@ -196,6 +196,11 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         return result
 
 
+if not os.path.exists(cfg.SEQUENCE_DIR):
+    os.makedirs(cfg.SEQUENCE_DIR)
+if not os.path.exists(cfg.PLAYLIST_DIR):
+    os.makedirs(cfg.PLAYLIST_DIR)
+
 if cfg.NO_PI:
     PLAYER = SequencePlayerWindow()
 else:
