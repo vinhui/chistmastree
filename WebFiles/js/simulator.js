@@ -69,21 +69,24 @@ $(document).ready(function() {
     }
 
     function runSequence() {
-        if (currentStep >= sequence.length)
-            currentStep = 0;
+        currentStep++;
+        currentStep = currentStep % sequence.length;
 
-        setTimeout(function () {
-            if (run) {
-                setLedRangeColor(
-                    sequence[currentStep].ledStartID,
-                    sequence[currentStep].ledEndID,
-                    sequence[currentStep].red,
-                    sequence[currentStep].green,
-                    sequence[currentStep].blue);
-                currentStep++;
-                runSequence();
-            }
-        }, sequence[Math.max(currentStep - 1, 0)].delay);
+        if (run) {
+            setLedRangeColor(
+                sequence[currentStep].ledStartID,
+                sequence[currentStep].ledEndID,
+                sequence[currentStep].red,
+                sequence[currentStep].green,
+                sequence[currentStep].blue);
+            currentStep;
+        }
+
+        var delay = sequence[currentStep].delay;
+        if(delay > 2)
+            setTimeout(runSequence, delay);
+        else
+            runSequence();
     }
 
     function setLedRangeColor(start, end, r, g, b) {
